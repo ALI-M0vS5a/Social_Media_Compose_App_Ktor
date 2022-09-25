@@ -1,15 +1,16 @@
 package com.montymobile.plugins
 
-import com.montymobile.route.userRoutes
+import com.montymobile.repository.user.UserRepository
+import com.montymobile.route.createUserRoute
 import io.ktor.server.routing.*
-import io.ktor.http.*
-import io.ktor.server.http.content.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.request.*
+import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
+    val userRepository: UserRepository by inject()
     routing {
-        userRoutes()
+        createUserRoute(
+            userRepository = userRepository
+        )
     }
 }

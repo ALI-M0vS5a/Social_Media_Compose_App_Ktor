@@ -1,8 +1,8 @@
-package com.montymobile.controller.user
+package com.montymobile.repository.user
 
 import com.montymobile.data.models.User
 
-interface UserController {
+interface UserRepository {
 
     suspend fun createUser(user: User)
 

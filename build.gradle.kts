@@ -37,8 +37,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
 
     // kmongo
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
@@ -46,7 +45,19 @@ dependencies {
 
     // Koin Core features
     implementation("io.insert-koin:koin-core:$koin_version")
-    testImplementation("io.insert-koin:koin-test:$koin_version")
     implementation("io.insert-koin:koin-ktor:$koin_ktor")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+
+    // Test Dependencies
+
+    // gson
+    testImplementation("com.google.code.gson:gson:2.8.8")
+    // koin
+    testImplementation("io.insert-koin:koin-test:$koin_version")
+    // koin test
+    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    // kotlin test
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    // truth
+    testImplementation("com.google.truth:truth:1.1.3")
 }

@@ -1,12 +1,12 @@
-package com.montymobile.controller.user
+package com.montymobile.repository.user
 
 import com.montymobile.data.models.User
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 
-class UserControllerImpl(
+class UserRepositoryImpl(
     db: CoroutineDatabase
-) : UserController {
+) : UserRepository {
 
     private val users = db.getCollection<User>()
 

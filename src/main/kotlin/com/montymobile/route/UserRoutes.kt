@@ -1,10 +1,9 @@
 package com.montymobile.route
 
-import com.montymobile.controller.user.UserController
+import com.montymobile.repository.user.UserRepository
 import com.montymobile.data.models.User
 import com.montymobile.data.requests.CreateAccountRequest
 import com.montymobile.data.responses.BasicApiResponse
-import com.montymobile.util.ApiResponseMessages
 import com.montymobile.util.ApiResponseMessages.FIELDS_BLANK
 import com.montymobile.util.ApiResponseMessages.USER_ALREADY_EXISTS
 import io.ktor.http.*
@@ -12,10 +11,9 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.inject
 
-fun Route.userRoutes() {
-    val userController: UserController by inject()
+fun Route.createUserRoute(userRepository: UserRepository) {
+
     route("/api/user/create") {
         post {
             val request =
@@ -23,7 +21,7 @@ fun Route.userRoutes() {
                     call.respond(HttpStatusCode.BadRequest)
                     return@post
                 }
-            val userExists = userController.getUserByEmail(request.email) != null
+            val userExists = userRepository.getUserByEmail(request.email) != null
             if (userExists) {
                 call.respond(
                     BasicApiResponse(
@@ -42,7 +40,7 @@ fun Route.userRoutes() {
                 )
                 return@post
             }
-            userController.createUser(
+            userRepository.createUser(
                 User(
                     email = request.email,
                     username = request.username,

@@ -1,7 +1,7 @@
 package com.montymobile.di
 
-import com.montymobile.controller.user.UserController
-import com.montymobile.controller.user.UserControllerImpl
+import com.montymobile.repository.user.UserRepository
+import com.montymobile.repository.user.UserRepositoryImpl
 import com.montymobile.util.Constants
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
@@ -13,7 +13,7 @@ val mainModule = module {
         val client = KMongo.createClient().coroutine
         client.getDatabase(Constants.DATABASE_NAME)
     }
-    single<UserController>{
-        UserControllerImpl(get())
+    single<UserRepository>{
+        UserRepositoryImpl(get())
     }
 }
