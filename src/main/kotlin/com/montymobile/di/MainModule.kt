@@ -1,5 +1,7 @@
 package com.montymobile.di
 
+import com.montymobile.data.repository.follow.FollowRepository
+import com.montymobile.data.repository.follow.FollowRepositoryImpl
 import com.montymobile.data.repository.user.UserRepository
 import com.montymobile.data.repository.user.UserRepositoryImpl
 import com.montymobile.util.Constants
@@ -15,5 +17,8 @@ val mainModule = module {
     }
     single<UserRepository>{
         UserRepositoryImpl(get())
+    }
+    single<FollowRepository>{
+        FollowRepositoryImpl(get())
     }
 }
