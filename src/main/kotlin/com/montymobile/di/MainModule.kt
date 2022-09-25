@@ -1,7 +1,7 @@
 package com.montymobile.di
 
-import com.montymobile.repository.user.UserRepository
-import com.montymobile.repository.user.UserRepositoryImpl
+import com.montymobile.data.repository.user.UserRepository
+import com.montymobile.data.repository.user.UserRepositoryImpl
 import com.montymobile.util.Constants
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine

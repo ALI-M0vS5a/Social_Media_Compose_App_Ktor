@@ -1,4 +1,4 @@
-package com.montymobile.repository.user
+package com.montymobile.data.repository.user
 
 import com.montymobile.data.models.User
 
@@ -9,4 +9,6 @@ interface UserRepository {
     suspend fun getUserById(id: String): User?
 
     suspend fun getUserByEmail(email : String): User?
+
+    suspend fun doesPasswordForUserMatch(email: String, enteredPassword: String) : Boolean
 }

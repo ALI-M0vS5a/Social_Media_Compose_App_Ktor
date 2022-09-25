@@ -1,6 +1,7 @@
 package com.montymobile.repository.user
 
 import com.montymobile.data.models.User
+import com.montymobile.data.repository.user.UserRepository
 
 class FakeUserRepository : UserRepository {
     val users = mutableListOf<User>()
@@ -15,5 +16,10 @@ class FakeUserRepository : UserRepository {
 
     override suspend fun getUserByEmail(email: String): User? {
         return users.find { it.email == email }
+    }
+
+    override suspend fun doesPasswordForUserMatch(email: String, enteredPassword: String): Boolean {
+        val user = getUserByEmail(email)
+        return user?.password == enteredPassword
     }
 }

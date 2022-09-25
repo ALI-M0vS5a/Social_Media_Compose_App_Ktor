@@ -17,8 +17,10 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
+import kotlin.test.AfterTest
 
 
 internal class CreateUserRouteTest : KoinTest {
@@ -32,6 +34,10 @@ internal class CreateUserRouteTest : KoinTest {
         startKoin {
             modules(testModule)
         }
+    }
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test

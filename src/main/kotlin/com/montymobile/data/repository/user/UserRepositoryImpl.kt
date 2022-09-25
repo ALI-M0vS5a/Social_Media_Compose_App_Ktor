@@ -1,4 +1,4 @@
-package com.montymobile.repository.user
+package com.montymobile.data.repository.user
 
 import com.montymobile.data.models.User
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -20,5 +20,13 @@ class UserRepositoryImpl(
 
     override suspend fun getUserByEmail(email: String): User? {
         return users.findOne(User::email eq email)
+    }
+
+    override suspend fun doesPasswordForUserMatch(
+        email: String,
+        enteredPassword: String
+    ): Boolean {
+        val user = getUserByEmail(email)
+        return  user?.password == enteredPassword
     }
 }

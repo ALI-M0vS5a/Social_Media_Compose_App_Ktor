@@ -1,10 +1,12 @@
 package com.montymobile.route
 
-import com.montymobile.repository.user.UserRepository
+import com.montymobile.data.repository.user.UserRepository
 import com.montymobile.data.models.User
 import com.montymobile.data.requests.CreateAccountRequest
+import com.montymobile.data.requests.LoginRequest
 import com.montymobile.data.responses.BasicApiResponse
 import com.montymobile.util.ApiResponseMessages.FIELDS_BLANK
+import com.montymobile.util.ApiResponseMessages.INVALID_CREDENTIALS
 import com.montymobile.util.ApiResponseMessages.USER_ALREADY_EXISTS
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -14,8 +16,7 @@ import io.ktor.server.routing.*
 
 fun Route.createUserRoute(userRepository: UserRepository) {
 
-    route("/api/user/create") {
-        post {
+        post("/api/user/create") {
             val request =
                 kotlin.runCatching { call.receiveNullable<CreateAccountRequest>() }.getOrNull() ?: kotlin.run {
                     call.respond(HttpStatusCode.BadRequest)
@@ -58,5 +59,38 @@ fun Route.createUserRoute(userRepository: UserRepository) {
                 )
             )
         }
+    }
+fun Route.loginUser(userRepository: UserRepository){
+    post("/api/user/login"){
+        val request =
+            kotlin.runCatching { call.receiveNullable<LoginRequest>() }.getOrNull() ?: kotlin.run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+        if(request.email.isBlank() || request.password.isBlank()) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+        val isCorrectPassword = userRepository.doesPasswordForUserMatch(
+            email = request.email,
+            enteredPassword = request.password
+        )
+        if(isCorrectPassword){
+            call.respond(
+                HttpStatusCode.OK,
+                BasicApiResponse(
+                    successful = true
+                )
+            )
+        } else {
+            call.respond(
+                HttpStatusCode.OK,
+                BasicApiResponse(
+                    successful = false,
+                    message = INVALID_CREDENTIALS
+                )
+            )
+        }
+
     }
 }
