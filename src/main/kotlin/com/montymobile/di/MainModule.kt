@@ -6,7 +6,11 @@ import com.montymobile.data.repository.post.PostRepository
 import com.montymobile.data.repository.post.PostRepositoryImpl
 import com.montymobile.data.repository.user.UserRepository
 import com.montymobile.data.repository.user.UserRepositoryImpl
+import com.montymobile.service.FollowService
+import com.montymobile.service.PostService
+import com.montymobile.service.UserService
 import com.montymobile.util.Constants
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
@@ -26,4 +30,7 @@ val mainModule = module {
     single<PostRepository>{
         PostRepositoryImpl(get())
     }
+    single { UserService(get()) }
+    single { FollowService(get()) }
+    single { PostService(get()) }
 }
