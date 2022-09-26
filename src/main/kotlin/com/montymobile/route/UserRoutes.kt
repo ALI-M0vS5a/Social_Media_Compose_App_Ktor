@@ -2,8 +2,6 @@ package com.montymobile.route
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.montymobile.data.repository.user.UserRepository
-import com.montymobile.data.models.User
 import com.montymobile.data.requests.CreateAccountRequest
 import com.montymobile.data.requests.LoginRequest
 import com.montymobile.data.responses.AuthResponse

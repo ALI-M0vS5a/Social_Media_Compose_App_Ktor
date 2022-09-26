@@ -9,6 +9,7 @@ import com.montymobile.service.PostService
 import com.montymobile.service.UserService
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
@@ -17,9 +18,9 @@ fun Application.configureRouting() {
     val followService: FollowService by inject()
     val postService: PostService by inject()
 
-    val jwtIssuer = environment.config.property("jwt.domain").toString()
-    val jwtAudience = environment.config.property("jwt.audience").toString()
-    val jwtSecret = environment.config.property("jwt.secret").toString()
+    val jwtIssuer = environment.config.property("jwt.domain").getString()
+    val jwtAudience = environment.config.property("jwt.audience").getString()
+    val jwtSecret = environment.config.property("jwt.secret").getString()
 
     routing {
         // User routes
@@ -35,7 +36,10 @@ fun Application.configureRouting() {
         unfollowUser(followService)
 
         // Post routes
-        createPostRoute(postService)
+        createPostRoute(
+            postService = postService,
+            userService = userService
+        )
 
     }
 }
