@@ -1,9 +1,10 @@
 package com.montymobile.route
 
-import com.auth0.jwt.JWT
 import com.montymobile.data.requests.CreatePostRequest
+import com.montymobile.data.requests.DeletePostRequest
 import com.montymobile.data.responses.BasicApiResponse
 import com.montymobile.plugins.email
+import com.montymobile.service.LikeService
 import com.montymobile.service.PostService
 import com.montymobile.service.UserService
 import com.montymobile.util.ApiResponseMessages.USER_NOT_FOUND
@@ -17,7 +18,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.createPostRoute(
+fun Route.createPost(
     postService: PostService,
     userService: UserService
 ) {
@@ -98,36 +99,28 @@ fun Route.getPostForFollows(
 
 fun Route.deletePost(
     postService: PostService,
-    userService: UserService
+    userService: UserService,
+    likeService: LikeService
 ){
-    delete("/api/post/create") {
+    delete("/api/post/delete") {
         val request =
-            kotlin.runCatching { call.receiveNullable<CreatePostRequest>() }.getOrNull() ?: kotlin.run {
+            kotlin.runCatching { call.receiveNullable<DeletePostRequest>() }.getOrNull() ?: kotlin.run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@delete
             }
 
+        val post = postService.getPost(request.postId)
+        if(post == null) {
+            call.respond(HttpStatusCode.NotFound)
+            return@delete
+        }
         ifEmailBelongsToUser(
-            userId = request.userId,
+            userId = post.userId,
             validateEmail = userService::doesEmailBelongToUserId
         ){
-            val didUserExists = postService.createPostIfUserExists(request)
-            if (!didUserExists) {
-                call.respond(
-                    HttpStatusCode.OK,
-                    BasicApiResponse(
-                        successful = false,
-                        message = USER_NOT_FOUND
-                    )
-                )
-            } else {
-                call.respond(
-                    HttpStatusCode.OK,
-                    BasicApiResponse(
-                        successful = true
-                    )
-                )
-            }
+            postService.deletePost(request.postId)
+            likeService.deleteLikesForParent(request.postId)
+            call.respond(HttpStatusCode.OK)
         }
     }
 }

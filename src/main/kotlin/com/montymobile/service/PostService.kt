@@ -27,4 +27,12 @@ class PostService(
     ): List<Post> {
         return postRepository.getPostByFollows(userId, page, pageSize)
     }
+
+
+    suspend fun getPost(postId: String): Post? = postRepository.getPost(postId)
+
+    suspend fun deletePost(postId: String) {
+        postRepository.deletePost(postId)
+    }
+
 }
