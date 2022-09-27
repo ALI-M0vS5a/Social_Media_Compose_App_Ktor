@@ -2,6 +2,7 @@ package com.montymobile.data.repository.user
 
 import com.montymobile.data.models.User
 import com.montymobile.data.requests.UpdateProfileRequest
+import org.litote.kmongo.`in`
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.or
@@ -44,7 +45,9 @@ class UserRepositoryImpl(
                 User::username regex Regex("(?i).*$query.*"),
                 User::email eq query
             )
-        ).toList()
+        )
+            .descendingSort(User::followerCount)
+            .toList()
     }
 
     override suspend fun updateUser(
@@ -71,5 +74,9 @@ class UserRepositoryImpl(
                 id = user.id
             )
         ).wasAcknowledged()
+    }
+
+    override suspend fun getUsers(userIds: List<String>): List<User> {
+        return users.find(User::id `in` userIds).toList()
     }
 }

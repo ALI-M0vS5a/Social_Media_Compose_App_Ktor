@@ -19,6 +19,7 @@ import com.montymobile.util.Constants
 import com.montymobile.util.Constants.BASE_URL
 import com.montymobile.util.Constants.PROFILE_PICTURE_PATH
 import com.montymobile.util.QueryParams
+import com.montymobile.util.save
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -217,10 +218,7 @@ fun Route.updateUserProfile(
                         }
                     }
                     is PartData.FileItem -> {
-                        val fileBytes = partData.streamProvider().readBytes()
-                        val fileExtension = partData.originalFileName?.takeLastWhile { it != '.' }
-                        fileName = UUID.randomUUID().toString() + "." + fileExtension
-                        File("$PROFILE_PICTURE_PATH$fileName").writeBytes(fileBytes)
+                        partData.save(PROFILE_PICTURE_PATH)
                     }
                     is PartData.BinaryItem -> Unit
                     else -> {}
