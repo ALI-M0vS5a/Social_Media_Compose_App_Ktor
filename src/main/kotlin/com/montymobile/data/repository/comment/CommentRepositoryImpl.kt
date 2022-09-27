@@ -10,8 +10,9 @@ class CommentRepositoryImpl(
 
     private val comments = db.getCollection<Comment>()
 
-    override suspend fun createComment(comment: Comment) {
+    override suspend fun createComment(comment: Comment): String {
         comments.insertOne(comment)
+        return comment.id
     }
 
     override suspend fun deleteComment(commentId: String): Boolean {
@@ -27,4 +28,9 @@ class CommentRepositoryImpl(
         return comments.findOneById(commentId)
     }
 
+    override suspend fun deleteCommentsFromPost(postId: String): Boolean {
+        return comments.deleteMany(
+            Comment::postId eq postId
+        ).wasAcknowledged()
+    }
 }

@@ -9,11 +9,11 @@ class PostService(
     private val postRepository: PostRepository
 ) {
 
-    suspend fun createPostIfUserExists(request: CreatePostRequest): Boolean {
+    suspend fun createPostIfUserExists(request: CreatePostRequest, userId: String): Boolean {
         return  postRepository.createPostIfUserExists(
             Post(
                 imageUrl = "",
-                userId = request.userId,
+                userId = userId,
                 timestamp = System.currentTimeMillis(),
                 description = request.description
             )
