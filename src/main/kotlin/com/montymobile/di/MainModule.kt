@@ -1,5 +1,6 @@
 package com.montymobile.di
 
+import com.google.gson.Gson
 import com.montymobile.data.repository.activity.ActivityRepository
 import com.montymobile.data.repository.activity.ActivityRepositoryImpl
 import com.montymobile.data.repository.comment.CommentRepository
@@ -49,4 +50,7 @@ val mainModule = module {
     single { LikeService(get()) }
     single { CommentService(get()) }
     single { ActivityService(get(), get(), get()) }
+
+    single { Gson() }
+
 }

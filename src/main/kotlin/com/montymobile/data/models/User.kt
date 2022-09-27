@@ -5,8 +5,6 @@ import org.bson.types.ObjectId
 
 
 data class User(
-    @BsonId
-    val id: String = ObjectId().toString(),
     val email: String,
     val username: String,
     val password: String,
@@ -15,5 +13,10 @@ data class User(
     val skills: List<String> = listOf(),
     val gitHubUrl: String?,
     val instagramUrl: String?,
-    val linkedInUrl: String?
+    val linkedInUrl: String?,
+    val followerCount: Int = 0,
+    val followingCount: Int = 0,
+    val postCount: Int = 0,
+    @BsonId
+    val id: String = ObjectId().toString(),
 )

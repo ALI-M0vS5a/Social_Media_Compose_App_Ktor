@@ -1,6 +1,7 @@
 package com.montymobile.data.repository.user
 
 import com.montymobile.data.models.User
+import com.montymobile.data.requests.UpdateProfileRequest
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.or
@@ -44,5 +45,31 @@ class UserRepositoryImpl(
                 User::email eq query
             )
         ).toList()
+    }
+
+    override suspend fun updateUser(
+        userId: String,
+        profileImageUrl: String,
+        updateProfileRequest: UpdateProfileRequest
+    ): Boolean {
+        val user = getUserById(userId) ?: return false
+        return users.updateOneById(
+            id = userId,
+            update = User(
+                email = user.email,
+                username = updateProfileRequest.username,
+                password = user.password,
+                profileImageUrl = profileImageUrl,
+                bio = updateProfileRequest.bio,
+                gitHubUrl = updateProfileRequest.gitHubUrl,
+                instagramUrl = updateProfileRequest.instagramUrl,
+                linkedInUrl = updateProfileRequest.linkedinUrl,
+                skills = updateProfileRequest.skills,
+                followingCount = user.followingCount,
+                followerCount = user.followerCount,
+                postCount = user.postCount,
+                id = user.id
+            )
+        ).wasAcknowledged()
     }
 }

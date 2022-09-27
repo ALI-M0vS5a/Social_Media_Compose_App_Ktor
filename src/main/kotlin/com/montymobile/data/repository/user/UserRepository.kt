@@ -1,6 +1,7 @@
 package com.montymobile.data.repository.user
 
 import com.montymobile.data.models.User
+import com.montymobile.data.requests.UpdateProfileRequest
 
 interface UserRepository {
 
@@ -15,4 +16,11 @@ interface UserRepository {
     suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean
 
     suspend fun searchForUsers(query: String): List<User>
+
+    suspend fun updateUser(
+        userId: String,
+        profileImageUrl: String,
+        updateProfileRequest: UpdateProfileRequest
+    ): Boolean
+
 }

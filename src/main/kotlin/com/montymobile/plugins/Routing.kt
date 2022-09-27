@@ -4,6 +4,7 @@ import com.montymobile.route.*
 import com.montymobile.service.*
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
@@ -29,6 +30,9 @@ fun Application.configureRouting() {
             jwtSecret = jwtSecret
         )
         searchUser(userService)
+        getUserprofile(userService)
+        getPostsForProfile(postService)
+        updateUserProfile(userService)
         // Following routes
         followUser(followService,activityService)
         unfollowUser(followService)
@@ -46,5 +50,9 @@ fun Application.configureRouting() {
         getCommentsForPost(commentService)
         //Activity routes
         getActivities(activityService)
+
+        static {
+            resources("static")
+        }
     }
 }

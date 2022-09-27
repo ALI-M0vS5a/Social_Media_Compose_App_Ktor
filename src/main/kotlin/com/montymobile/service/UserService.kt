@@ -4,6 +4,8 @@ import com.montymobile.data.models.User
 import com.montymobile.data.repository.follow.FollowRepository
 import com.montymobile.data.repository.user.UserRepository
 import com.montymobile.data.requests.CreateAccountRequest
+import com.montymobile.data.requests.UpdateProfileRequest
+import com.montymobile.data.responses.ProfileResponse
 import com.montymobile.data.responses.UserResponseItem
 
 
@@ -16,8 +18,26 @@ class UserService(
         return userRepository.getUserByEmail(email) != null
     }
 
-    suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean {
-        return userRepository.doesEmailBelongToUserId(email, userId)
+    suspend fun getUserProfile(userId: String, callerUserId: String): ProfileResponse? {
+        val user = userRepository.getUserById(userId) ?: return null
+        return ProfileResponse(
+            username = user.username,
+            bio = user.bio,
+            followerCount = user.followerCount,
+            followingCount = user.followingCount,
+            postCount = user.postCount,
+            profilePictureUrl = user.profileImageUrl,
+            topSkillUrls = user.skills,
+            gitHubUrl = user.gitHubUrl,
+            instagramUrl = user.instagramUrl,
+            linkedinUrl = user.linkedInUrl,
+            isOwnProfile = userId == callerUserId,
+            isFollowing = if(userId != callerUserId) {
+                followRepository.doesUserFollow(callerUserId,userId)
+            } else {
+                false
+            }
+        )
     }
 
     suspend fun getUserByEmail(email: String): User? {
@@ -63,6 +83,18 @@ class UserService(
             return ValidationEvent.ErrorFieldEmpty
         }
         return ValidationEvent.Success
+    }
+
+    suspend fun updateUser(
+        userId: String,
+        profileImageUrl: String,
+        updateProfileRequest: UpdateProfileRequest
+    ): Boolean {
+        return userRepository.updateUser(
+            userId = userId,
+            profileImageUrl = profileImageUrl,
+            updateProfileRequest = updateProfileRequest
+        )
     }
 
     sealed class ValidationEvent {
