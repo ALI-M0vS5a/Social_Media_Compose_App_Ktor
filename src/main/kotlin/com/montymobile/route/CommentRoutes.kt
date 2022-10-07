@@ -33,7 +33,7 @@ fun Route.createComment(
                 is CommentService.ValidationEvents.ErrorFieldEmpty -> {
                     call.respond(
                         HttpStatusCode.OK,
-                        BasicApiResponse(
+                        BasicApiResponse<Unit>(
                             successful = false,
                             message = ApiResponseMessages.FIELDS_BLANK
                         )
@@ -42,7 +42,7 @@ fun Route.createComment(
                 is CommentService.ValidationEvents.ErrorCommentTooLong -> {
                     call.respond(
                         HttpStatusCode.OK,
-                        BasicApiResponse(
+                        BasicApiResponse<Unit>(
                             successful = false,
                             message = ApiResponseMessages.COMMENT_TOO_LONG
                         )
@@ -55,7 +55,7 @@ fun Route.createComment(
                     )
                     call.respond(
                         HttpStatusCode.OK,
-                        BasicApiResponse(
+                        BasicApiResponse<Unit>(
                             successful = true
                         )
                     )
@@ -100,12 +100,12 @@ fun Route.deleteComment(
                 likeService.deleteLikesForParent(request.commentId)
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         successful = true
                     )
                 )
             } else {
-                call.respond(HttpStatusCode.OK,BasicApiResponse(successful = false))
+                call.respond(HttpStatusCode.OK,BasicApiResponse<Unit>(successful = false))
             }
         }
     }

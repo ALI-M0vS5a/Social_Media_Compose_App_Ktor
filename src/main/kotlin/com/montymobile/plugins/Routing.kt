@@ -15,6 +15,7 @@ fun Application.configureRouting() {
     val likeService: LikeService by inject()
     val commentService: CommentService by inject()
     val activityService: ActivityService by inject()
+    val skillService: SkillService by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -22,6 +23,7 @@ fun Application.configureRouting() {
 
     routing {
         // User routes
+        authenticate()
         createUser(userService)
         loginUser(
             userService = userService,
@@ -51,6 +53,9 @@ fun Application.configureRouting() {
         getCommentsForPost(commentService)
         //Activity routes
         getActivities(activityService)
+
+        //Skill Routes
+        getSkills(skillService)
 
         static {
             resources("static")

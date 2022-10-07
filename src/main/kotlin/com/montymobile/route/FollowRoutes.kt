@@ -8,6 +8,7 @@ import com.montymobile.data.util.ActivityType
 import com.montymobile.service.ActivityService
 import com.montymobile.service.FollowService
 import com.montymobile.util.ApiResponseMessages.USER_NOT_FOUND
+import com.montymobile.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -39,14 +40,14 @@ fun Route.followUser(
                 )
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         successful = true
                     )
                 )
             } else {
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         successful = false,
                         message = USER_NOT_FOUND
                     )
@@ -58,28 +59,30 @@ fun Route.followUser(
 }
 
 fun Route.unfollowUser(followService: FollowService) {
-    delete("/api/following/unfollow") {
-        val request =
-            kotlin.runCatching { call.receiveNullable<FollowUpdateRequest>() }.getOrNull() ?: kotlin.run {
-                call.respond(HttpStatusCode.BadRequest)
-                return@delete
+    authenticate {
+        delete("/api/following/unfollow") {
+            val userId =
+                call.parameters[QueryParams.PARAM_USER_ID] ?: kotlin.run {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@delete
+                }
+            val didUserExist = followService.unfollowUserIfExists(userId, call.userId)
+            if (didUserExist) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse<Unit>(
+                        successful = true
+                    )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse<Unit>(
+                        successful = false,
+                        message = USER_NOT_FOUND
+                    )
+                )
             }
-        val didUserExist = followService.unfollowUserIfExists(request, call.userId)
-        if (didUserExist) {
-            call.respond(
-                HttpStatusCode.OK,
-                BasicApiResponse(
-                    successful = true
-                )
-            )
-        } else {
-            call.respond(
-                HttpStatusCode.OK,
-                BasicApiResponse(
-                    successful = false,
-                    message = USER_NOT_FOUND
-                )
-            )
         }
     }
 }

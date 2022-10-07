@@ -21,13 +21,15 @@ class UserService(
     suspend fun getUserProfile(userId: String, callerUserId: String): ProfileResponse? {
         val user = userRepository.getUserById(userId) ?: return null
         return ProfileResponse(
+            userId = user.id,
             username = user.username,
             bio = user.bio,
             followerCount = user.followerCount,
             followingCount = user.followingCount,
             postCount = user.postCount,
             profilePictureUrl = user.profileImageUrl,
-            topSkillUrls = user.skills,
+            bannerUrl = user.bannerUrl,
+            topSkills = user.skills,
             gitHubUrl = user.gitHubUrl,
             instagramUrl = user.instagramUrl,
             linkedinUrl = user.linkedInUrl,
@@ -54,12 +56,13 @@ class UserService(
         return users.map { user ->
             val isFollowing = followsByUser.find { it.followedUserId == user.id } != null
             UserResponseItem(
+                userId = user.id,
                 username = user.username,
                 profilePictureUrl = user.profileImageUrl,
                 bio = user.bio,
                 isFollowing = isFollowing
             )
-        }
+        }.filter { it.userId != userId }
     }
 
 
@@ -69,6 +72,7 @@ class UserService(
                 email = request.email,
                 username = request.username,
                 password = request.password,
+                bannerUrl = "",
                 profileImageUrl = "",
                 bio = "",
                 gitHubUrl = null,
@@ -87,11 +91,13 @@ class UserService(
 
     suspend fun updateUser(
         userId: String,
-        profileImageUrl: String,
+        bannerUrl: String?,
+        profileImageUrl: String?,
         updateProfileRequest: UpdateProfileRequest
     ): Boolean {
         return userRepository.updateUser(
             userId = userId,
+            bannerUrl = bannerUrl,
             profileImageUrl = profileImageUrl,
             updateProfileRequest = updateProfileRequest
         )

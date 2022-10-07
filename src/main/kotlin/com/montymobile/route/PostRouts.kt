@@ -50,7 +50,7 @@ fun Route.createPost(
                     else -> {}
                 }
             }
-            val postPictureUrl = "${Constants.BASE_URL}/post_pictures/$fileName"
+            val postPictureUrl = "${"http://192.168.0.100:8081"}/post_pictures/$fileName"
             createPostRequest?.let { request ->
                 val createPostAcknowledged = postService.createPost(
                     request = request,
@@ -61,7 +61,7 @@ fun Route.createPost(
                 if (createPostAcknowledged) {
                     call.respond(
                         HttpStatusCode.OK,
-                        BasicApiResponse(
+                        BasicApiResponse<Unit>(
                             successful = true
                         )
                     )
@@ -85,12 +85,13 @@ fun Route.getPostForFollows(
 ) {
     authenticate {
         get("/api/post/get") {
+            val userId = call.parameters[QueryParams.PARAM_USER_ID]
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
             val pageSize =
                 call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constants.DEFAULT_POST_PAGE_SIZE
 
             val posts = postService.getPostsForFollows(
-                userId = call.userId,
+                userId = userId ?: call.userId,
                 page = page,
                 pageSize = pageSize
             )
