@@ -3,7 +3,6 @@ package com.montymobile.route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.google.gson.Gson
-import com.montymobile.data.models.User
 import com.montymobile.data.requests.CreateAccountRequest
 import com.montymobile.data.requests.LoginRequest
 import com.montymobile.data.requests.UpdateProfileRequest
@@ -18,7 +17,6 @@ import com.montymobile.util.ApiResponseMessages.INVALID_CREDENTIALS
 import com.montymobile.util.ApiResponseMessages.USER_ALREADY_EXISTS
 import com.montymobile.util.Constants
 import com.montymobile.util.Constants.BANNER_IMAGE_PATH
-import com.montymobile.util.Constants.BASE_URL
 import com.montymobile.util.Constants.PROFILE_PICTURE_PATH
 import com.montymobile.util.QueryParams
 import com.montymobile.util.save
@@ -194,9 +192,10 @@ fun Route.getPostsForProfile(
         get("/api/user/posts") {
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
             val pageSize =
-                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constants.DEFAULT_POST_PAGE_SIZE
+                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
 
             val posts = postService.getPostsForProfile(
+                ownUserId = call.userId,
                 userId = call.userId,
                 page = page,
                 pageSize = pageSize
@@ -241,8 +240,8 @@ fun Route.updateUserProfile(
                     else -> {}
                 }
             }
-            val profilePictureUrl = "${"http://192.168.0.100:8081"}/profile_pictures/$profilePictureFileName"
-            val bannerImageUrl = "${"http://192.168.0.100:8081"}/banner_pictures/$bannerImageFileName"
+            val profilePictureUrl = "${"http://192.168.0.103:8081"}/profile_pictures/$profilePictureFileName"
+            val bannerImageUrl = "${"http://192.168.0.103:8081"}/banner_pictures/$bannerImageFileName"
             updateProfileRequest?.let { request ->
                 val updateAcknowledged = userService.updateUser(
                     userId = call.userId,

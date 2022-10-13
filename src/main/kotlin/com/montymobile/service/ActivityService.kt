@@ -4,6 +4,7 @@ import com.montymobile.data.models.Activity
 import com.montymobile.data.repository.activity.ActivityRepository
 import com.montymobile.data.repository.comment.CommentRepository
 import com.montymobile.data.repository.post.PostRepository
+import com.montymobile.data.responses.ActivityResponse
 import com.montymobile.data.util.ActivityType
 import com.montymobile.data.util.ParentType
 import com.montymobile.util.Constants
@@ -17,7 +18,7 @@ class ActivityService(
         userId: String,
         page: Int = 0,
         pageSize: Int = Constants.DEFAULT_ACTIVITY_PAGE_SIZE
-    ): List<Activity> {
+    ): List<ActivityResponse> {
         return activityRepository.getActivitiesForUser(userId, page, pageSize)
     }
 

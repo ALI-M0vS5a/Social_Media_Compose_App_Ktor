@@ -2,6 +2,8 @@ package com.montymobile.plugins
 
 import com.montymobile.route.*
 import com.montymobile.service.*
+import com.montymobile.service.chat.ChatController
+import com.montymobile.service.chat.ChatService
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -16,6 +18,8 @@ fun Application.configureRouting() {
     val commentService: CommentService by inject()
     val activityService: ActivityService by inject()
     val skillService: SkillService by inject()
+    val chatService: ChatService by inject()
+    val chatController: ChatController by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -43,6 +47,7 @@ fun Application.configureRouting() {
         createPost(postService)
         getPostForFollows(postService)
         deletePost(postService,likeService,commentService)
+        getPostDetails(postService)
         // Like routes
         likeParent(likeService,activityService)
         unlikeParent(likeService)
@@ -56,6 +61,11 @@ fun Application.configureRouting() {
 
         //Skill Routes
         getSkills(skillService)
+
+        //Chat Routes
+        getChatForUser(chatService)
+        getMessagesForChat(chatService)
+        chatWebSocket(chatController)
 
         static {
             resources("static")

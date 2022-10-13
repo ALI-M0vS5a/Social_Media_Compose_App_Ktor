@@ -2,11 +2,14 @@ package com.montymobile.service
 
 import com.montymobile.data.models.Comment
 import com.montymobile.data.repository.comment.CommentRepository
+import com.montymobile.data.repository.user.UserRepository
 import com.montymobile.data.requests.CreateCommentRequest
+import com.montymobile.data.responses.CommentResponse
 import com.montymobile.util.Constants
 
 class CommentService(
-    private val repository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val userRepository: UserRepository
 ) {
    suspend fun createComment(createCommentRequest: CreateCommentRequest, userId: String): ValidationEvents {
        createCommentRequest.apply {
@@ -17,8 +20,12 @@ class CommentService(
                return ValidationEvents.ErrorCommentTooLong
            }
        }
-       repository.createComment(
+       val user = userRepository.getUserById(userId) ?: return ValidationEvents.UserNotFound
+       commentRepository.createComment(
            Comment(
+               username = user.username,
+               profileImageUrl = user.profileImageUrl,
+               likeCount = 0,
                comment = createCommentRequest.comment,
                userId = userId,
                postId = createCommentRequest.postId,
@@ -28,24 +35,25 @@ class CommentService(
        return ValidationEvents.Success
    }
     suspend fun deleteComment(commentId: String): Boolean {
-        return repository.deleteComment(commentId)
+        return commentRepository.deleteComment(commentId)
     }
-    suspend fun getCommentsForPost(postId: String): List<Comment> {
-        return repository.getCommentsForPost(postId)
+    suspend fun getCommentsForPost(postId: String, ownUserId: String): List<CommentResponse> {
+        return commentRepository.getCommentsForPost(postId, ownUserId)
     }
 
     suspend fun getCommentById(commentId: String): Comment? {
-        return repository.getComment(commentId)
+        return commentRepository.getComment(commentId)
     }
 
     suspend fun deleteCommentForPost(postId: String) {
-       repository.deleteCommentsFromPost(postId)
+       commentRepository.deleteCommentsFromPost(postId)
     }
 
     sealed class ValidationEvents {
         object ErrorFieldEmpty: ValidationEvents()
         object ErrorCommentTooLong: ValidationEvents()
         object Success: ValidationEvents()
+        object UserNotFound: ValidationEvents()
     }
 }
 

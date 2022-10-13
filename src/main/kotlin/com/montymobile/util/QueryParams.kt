@@ -2,6 +2,8 @@ package com.montymobile.util
 
 object QueryParams {
 
+    const val PARAM_CHAT_ID = "chatId"
+    const val PARAM_PARENT_TYPE = "parentType"
     const val PARAM_PAGE = "page"
     const val PARAM_PAGE_SIZE = ""
     const val PARAM_POST_ID = "postId"

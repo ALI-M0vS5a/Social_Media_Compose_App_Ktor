@@ -1,6 +1,6 @@
 package com.montymobile.route
 
-import com.montymobile.data.models.Activity
+
 import com.montymobile.data.requests.CreateCommentRequest
 import com.montymobile.data.requests.DeleteCommentRequest
 import com.montymobile.data.responses.BasicApiResponse
@@ -60,6 +60,15 @@ fun Route.createComment(
                         )
                     )
                 }
+                is CommentService.ValidationEvents.UserNotFound -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse<Unit>(
+                            successful = false,
+                            message = ApiResponseMessages.COMMENT_TOO_LONG
+                        )
+                    )
+                }
             }
         }
     }
@@ -74,7 +83,7 @@ fun Route.getCommentsForPost(
                 call.respond(HttpStatusCode.BadRequest)
                 return@get
             }
-            val comments = commentService.getCommentsForPost(postId)
+            val comments = commentService.getCommentsForPost(postId, call.userId)
             call.respond(HttpStatusCode.OK, comments)
         }
     }
