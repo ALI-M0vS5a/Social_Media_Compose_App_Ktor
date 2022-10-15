@@ -54,7 +54,9 @@ fun Route.getChatForUser(
             call.respond(
                 HttpStatusCode.OK,
                 chats
-            )
+            ).also {
+                println("chats -> $chats")
+            }
         }
     }
 }
